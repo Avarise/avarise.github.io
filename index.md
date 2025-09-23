@@ -177,6 +177,11 @@ All of them require Somatic component.
     Components: Verbal, 1 Mana, Somatic
 
 ---
+### Beard
+    Beeûrp
+    Components: Verbal, Somatic, 1 Mana
+
+---
 ## Mastery Words
 These are the only words that might not have their own Energy Cost,
 but, they require other spell words that provide that Energy.
@@ -190,7 +195,7 @@ They stabilize other words, or guarantee degrees of success when casting.
 ---
 ### Power Word
     Dovinus
-    Components: Verbal, 1 Mana
+    Components: Verbal, Dust
     Any spell used with Dovinus becomes Verbal only. Affects anything that can hear you.
     If mixed with other Shaping Words, Dovinus Spell delivers these new shapes to those that can hear,
     in any way possible. Additionally, boosts tier of the power die by 1.
@@ -198,7 +203,7 @@ They stabilize other words, or guarantee degrees of success when casting.
 ---
 ### Focus Word
     Balrurg
-    Components: Verbal, 1 Mana
+    Components: Verbal, 1 Dust
     Gives advantage on a Spell Casting Check.
 
 ---
@@ -213,7 +218,7 @@ They stabilize other words, or guarantee degrees of success when casting.
 ---
 ### Ascended Energy
     Divinarius
-    Components: Verbal, 1 Mana
+    Components: Verbal, 1 Dust
     Boosts casting guaranteed success difficulty by one Tier.
 
 ---
@@ -237,18 +242,25 @@ They stabilize other words, or guarantee degrees of success when casting.
 ---
 ### Hard Success
     Bongiorną
-    Components: Verbal, 1 Mana, Somatic
+    Components: Verbal, 1 Dust, Somatic
 
 ---
 ### Very Hard Success
     Ciangobafango
-    Components: Verbal, 1 Mana, Somatic
+    Components: Verbal, 1 Dust, Somatic
 
 ---
 ### Show Me
     Gabbergûbber
-    Components: Verbal, 1 Mana
-    Shows a simple vision. Used 3 times conjures Vision of the World.
+    Components: Verbal, 1 Dust
+    Shows a simple vision. Used 3 times conjures Vision of the World (Navigation).
+
+---
+### Multipler 
+    Tigiba
+    Components: Verbal, 1 Dust
+
+
 
 ---
 ## Unused Owrds
@@ -280,3 +292,5 @@ They stabilize other words, or guarantee degrees of success when casting.
     Gibadesh
     Gibstein
     Illana
+
+    Bleerp Bugiba Gblor
