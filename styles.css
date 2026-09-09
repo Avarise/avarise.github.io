@@ -274,6 +274,21 @@ input, select {
 
 .compact-button { padding: 7px 10px; }
 
+.base-action-button {
+  width: 100%;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #131619;
+  color: var(--text);
+  padding: 12px;
+  text-align: left;
+}
+.base-action-button strong,
+.base-action-button span { display: block; }
+.base-action-button span { color: var(--muted); margin-top: 4px; font-size: .8rem; }
+.base-action-button[aria-pressed="true"] { border-color: #8f7848; background: #2b261c; }
+
 .prefix-buttons {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -457,6 +472,36 @@ input, select {
 .rules-panel ul { margin: 13px 0 0; padding-left: 20px; color: var(--muted); line-height: 1.55; }
 .rules-panel li + li { margin-top: 7px; }
 
+.spell-result {
+  margin-top: 16px;
+  border: 1px solid #3b424a;
+  border-radius: 12px;
+  background: #111417;
+  padding: 15px;
+}
+.spell-result > strong { display: block; margin-top: 4px; color: #efd89f; font-size: 1.3rem; overflow-wrap: anywhere; }
+.spell-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
+.spell-metrics > div { border: 1px solid #252a30; border-radius: 9px; padding: 9px; min-width: 0; }
+.spell-metrics strong { display: block; margin-top: 3px; }
+.spell-charge { color: var(--accent); font-size: .86rem; font-weight: 700; margin-top: 12px; }
+
+.word-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
+.word-button {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #131619;
+  color: var(--text);
+  padding: 12px;
+  text-align: left;
+}
+.word-button:hover { border-color: #59616a; }
+.word-button[aria-pressed="true"] { border-color: #8f7848; background: #2b261c; }
+.word-heading { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.word-heading strong { font-size: .95rem; }
+.word-heading b { color: var(--accent); font-size: .82rem; overflow-wrap: anywhere; text-align: right; }
+.word-button small { display: block; color: #c8b47f; margin-top: 5px; }
+.word-effect { display: block; color: var(--muted); font-size: .8rem; line-height: 1.4; margin-top: 7px; }
+
 @media (max-width: 900px) {
   .topbar { flex-wrap: wrap; }
   .view-switch { order: 3; width: 100%; }
@@ -489,13 +534,16 @@ input, select {
   .prefix-button { min-height: 66px; }
   .example-grid,
   .weapon-grid,
-  .equipment-grid { grid-template-columns: 1fr; }
+  .equipment-grid,
+  .word-grid { grid-template-columns: 1fr; }
+  .spell-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .potential-example { grid-template-columns: 1fr; text-align: center; }
   .attack-metrics { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 390px) {
-  .attack-metrics { grid-template-columns: 1fr; }
+  .attack-metrics,
+  .spell-metrics { grid-template-columns: 1fr; }
   .guide-heading { align-items: center; }
 }
 

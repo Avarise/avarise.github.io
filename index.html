@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111315">
-  <title>SigilRPG Stat Tracker</title>
+  <title>SigilRPG Table Helper</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -16,7 +16,8 @@
 
     <nav class="view-switch" aria-label="SigilRPG tools">
       <button id="trackerViewButton" class="view-button active" type="button" aria-current="page">Tracker</button>
-      <button id="guideViewButton" class="view-button" type="button">Combat guide</button>
+      <button id="guideViewButton" class="view-button" type="button">Action composer</button>
+      <button id="wordsViewButton" class="view-button" type="button">Guide</button>
     </nav>
 
     <div id="topbarActions" class="topbar-actions">
@@ -60,18 +61,20 @@
     <section id="guideView" class="app-view guide-view" aria-labelledby="guideTitle" hidden>
       <section class="guide-intro guide-panel">
         <p class="eyebrow">Physical-play reference</p>
-        <h2 id="guideTitle">Building an attack</h2>
-        <p>An attack starts at <strong>1 AP</strong> and <strong>2 damage potential</strong>. Each point of potential is one contest and can cause one wound. Prefixes modify that same attack and normally cost another AP each.</p>
+        <h2 id="guideTitle">Build one action</h2>
+        <p>Combine a physical attack, attack prefixes, and Words of Power into one action. Larger actions can be charged across multiple turns; rolls and final rulings remain at the table.</p>
       </section>
 
       <section class="guide-panel attack-composer" aria-labelledby="composerTitle">
         <div class="guide-heading">
           <div>
             <p class="eyebrow">Try combinations</p>
-            <h2 id="composerTitle">Attack composer</h2>
+            <h2 id="composerTitle">Build one action</h2>
           </div>
-          <button id="clearPrefixesButton" class="button compact-button" type="button">Clear</button>
+          <button id="clearPrefixesButton" class="button compact-button" type="button">Clear prefixes</button>
         </div>
+
+        <button id="includeAttackButton" class="base-action-button" type="button" aria-pressed="true"><strong>Base Attack</strong><span>1 AP · 2 potential</span></button>
 
         <div class="prefix-buttons" role="group" aria-label="Attack prefixes">
           <button class="prefix-button" type="button" data-prefix="power" aria-pressed="false">
@@ -92,29 +95,12 @@
           </button>
         </div>
 
-        <article class="attack-result" aria-live="polite">
-          <div>
-            <span class="label">Attack</span>
-            <strong id="attackName">Basic Attack</strong>
-          </div>
-          <div class="attack-metrics">
-            <div>
-              <span class="label">Cost</span>
-              <strong id="attackCost">1 AP</strong>
-              <div id="apPips" class="pips" aria-hidden="true"></div>
-            </div>
-            <div>
-              <span class="label">Potential</span>
-              <strong id="attackPotential">2 wounds max</strong>
-              <div id="potentialPips" class="pips potential-pips" aria-hidden="true"></div>
-            </div>
-          </div>
-          <p id="attackWarning" class="attack-warning" hidden></p>
-          <ul id="attackEffects" class="attack-effects"></ul>
-        </article>
+
       </section>
 
-      <section class="guide-panel" aria-labelledby="chainTitle">
+      <div id="actionWordsMount"></div>
+
+      <section class="guide-panel guide-reference" aria-labelledby="chainTitle">
         <p class="eyebrow">Damage potential</p>
         <h2 id="chainTitle">The damage chain</h2>
         <p class="guide-copy">Potential is a ceiling, not automatic damage: <strong>one potential means one contest and at most one wound</strong>. The chain stops as soon as the defender wins or ties.</p>
@@ -156,7 +142,7 @@
         </div>
       </section>
 
-      <section class="guide-panel" aria-labelledby="examplesTitle">
+      <section class="guide-panel guide-reference" aria-labelledby="examplesTitle">
         <p class="eyebrow">Common patterns</p>
         <h2 id="examplesTitle">Examples</h2>
 
@@ -185,7 +171,7 @@
         </div>
       </section>
 
-      <section class="guide-panel" aria-labelledby="equipmentTitle">
+      <section class="guide-panel guide-reference" aria-labelledby="equipmentTitle">
         <p class="eyebrow">Playtest reference</p>
         <h2 id="equipmentTitle">Weapons</h2>
         <p class="guide-copy">Impact is adapted from the maximum of each weapon's working damage dice. Accuracy connects the attack; the higher of retained Accuracy or Impact is used after the Dodge contest.</p>
@@ -207,7 +193,7 @@
         </div>
       </section>
 
-      <section class="guide-panel" aria-labelledby="platingTitle">
+      <section class="guide-panel guide-reference" aria-labelledby="platingTitle">
         <p class="eyebrow">Playtest reference</p>
         <h2 id="platingTitle">Plating</h2>
         <p class="guide-copy">Plating trades mobility for reliable defense. Exact stats-as-dice equipment wording is still being tested; confirm unresolved values with the GM.</p>
@@ -218,7 +204,7 @@
         </div>
       </section>
 
-      <section class="guide-panel rules-panel" aria-labelledby="rulesTitle">
+      <section class="guide-panel rules-panel guide-reference" aria-labelledby="rulesTitle">
         <p class="eyebrow">Keep in mind</p>
         <h2 id="rulesTitle">Important rules</h2>
         <ul>
@@ -231,6 +217,65 @@
           <li>The wounded attribute follows the injury fiction; it is not automatically the defense that failed.</li>
           <li>Queue wounds during the round; apply all attribute reductions when the round ends.</li>
           <li>Prefixes cost 1 AP each. Quick is intentionally omitted until its rule is defined.</li>
+        </ul>
+      </section>
+    </section>
+
+    <section id="wordsView" class="app-view guide-view" aria-labelledby="wordsTitle" hidden>
+      <section class="guide-panel">
+        <p class="eyebrow">Physical-play reference</p>
+        <h2 id="wordsTitle">Game Guide</h2>
+        <p>Quick rules, equipment, damage-chain, and Words of Power reference. Rolls and rulings stay at the table.</p>
+      </section>
+
+      <div id="guideReferenceMount"></div>
+
+      <section class="guide-panel spell-composer" aria-labelledby="spellComposerTitle">
+        <div class="guide-heading">
+          <div><p class="eyebrow">Try combinations</p><h2 id="spellComposerTitle">Combined result</h2></div>
+          <button id="clearWordsButton" class="button compact-button" type="button">Clear words</button>
+        </div>
+        <article class="spell-result" aria-live="polite">
+          <span class="label">Combined action</span>
+          <strong id="spellPhrase">Basic Attack</strong>
+          <div class="spell-metrics">
+            <div><span class="label">Cost</span><strong id="spellAp">0 AP</strong></div>
+            <div><span class="label">Resources</span><strong id="spellResources">—</strong></div>
+            <div><span class="label">Potential</span><strong id="spellPotential">0</strong></div>
+            <div><span class="label">Casting check</span><strong id="spellDifficulty">No check</strong></div>
+          </div>
+          <p id="spellCharge" class="spell-charge"></p>
+          <ul id="spellEffects" class="attack-effects"></ul>
+        </article>
+      </section>
+
+      <section class="guide-panel word-category" aria-labelledby="sourcesTitle">
+        <p class="eyebrow">Energy and substance</p><h2 id="sourcesTitle">Source Words</h2>
+        <p class="guide-copy">Sources can be combined to blend energies. Each Source normally costs 1 AP and 1 Mana and adds 1 damage potential. A lone Source attached to a base Attack is a Smite and costs no additional AP.</p>
+        <div id="sourceWords" class="word-grid"></div>
+      </section>
+
+      <section class="guide-panel word-category" aria-labelledby="shapesTitle">
+        <p class="eyebrow">Form and delivery</p><h2 id="shapesTitle">Shaping Words</h2>
+        <p class="guide-copy">Shapes can be mixed: use their intersection when compatible, or let the later shape modify the earlier one. Exact measurements below are suggested playtest rulings.</p>
+        <div id="shapeWords" class="word-grid"></div>
+      </section>
+
+      <section class="guide-panel word-category" aria-labelledby="masteriesTitle">
+        <p class="eyebrow">Control and refinement</p><h2 id="masteriesTitle">Mastery Words</h2>
+        <p class="guide-copy">Masteries alter delivery, stability, or reliability. They cost 1 AP but normally add no damage potential.</p>
+        <div id="masteryWords" class="word-grid"></div>
+      </section>
+
+      <section class="guide-panel rules-panel">
+        <p class="eyebrow">Playtest procedure</p><h2>Casting and charging</h2>
+        <ul>
+          <li>One word costs 1 AP. A character normally contributes 3 AP to a spell per turn.</li>
+          <li>A spell of 4 or more words carries into another turn; spent Mana remains committed while charging.</li>
+          <li>At 2 words, roll spellcasting against Easy 4. Every additional word raises the DC by one full difficulty tier.</li>
+          <li>On a failed casting check, the spell fails and its committed Mana is lost.</li>
+          <li>Attack-like Shapes may use attack prefixes; those prefixes add their normal AP and effects.</li>
+          <li>Descriptions, targets, and fictional logic remain authoritative when mixed Shapes interact.</li>
         </ul>
       </section>
     </section>
