@@ -320,3 +320,135 @@ function loadState() {
   }
   return { characters: [] };
 }
+
+// --- Single-page combat guide ------------------------------------------------
+
+const trackerView = document.querySelector('#trackerView');
+const guideView = document.querySelector('#guideView');
+const trackerViewButton = document.querySelector('#trackerViewButton');
+const guideViewButton = document.querySelector('#guideViewButton');
+const topbarActions = document.querySelector('#topbarActions');
+const pageTitle = document.querySelector('#pageTitle');
+const clearPrefixesButton = document.querySelector('#clearPrefixesButton');
+const prefixButtons = [...document.querySelectorAll('.prefix-button')];
+const attackName = document.querySelector('#attackName');
+const attackCost = document.querySelector('#attackCost');
+const attackPotential = document.querySelector('#attackPotential');
+const apPips = document.querySelector('#apPips');
+const potentialPips = document.querySelector('#potentialPips');
+const attackEffects = document.querySelector('#attackEffects');
+const attackWarning = document.querySelector('#attackWarning');
+
+const PREFIXES = {
+  power: {
+    label: 'Power',
+    potential: 1,
+    effects: ['Accuracy die increases by one tier.', 'Damage potential increases by 1.']
+  },
+  precision: {
+    label: 'Precision',
+    potential: 1,
+    effects: ['Gain advantage on the accuracy roll.', 'Damage potential increases by 1.', 'One attribute may be wounded twice by this attack.']
+  },
+  dashing: {
+    label: 'Dashing',
+    potential: 1,
+    effects: ['Damage potential increases by 1.']
+  },
+  sweep: {
+    label: 'Sweep',
+    potential: 0,
+    effects: ['Apply the attack against multiple targets.', 'Sweep does not increase damage potential.', 'A miss can force chip damage even when the target would normally be immune.']
+  }
+};
+
+const selectedPrefixes = new Set();
+
+trackerViewButton.addEventListener('click', () => setAppView('tracker'));
+guideViewButton.addEventListener('click', () => setAppView('guide'));
+window.addEventListener('hashchange', syncViewFromHash);
+
+prefixButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const prefix = button.dataset.prefix;
+    if (selectedPrefixes.has(prefix)) selectedPrefixes.delete(prefix);
+    else selectedPrefixes.add(prefix);
+    renderAttackComposer();
+  });
+});
+
+clearPrefixesButton.addEventListener('click', () => {
+  selectedPrefixes.clear();
+  renderAttackComposer();
+});
+
+function setAppView(view, updateHash = true) {
+  const showGuide = view === 'guide';
+  trackerView.hidden = showGuide;
+  guideView.hidden = !showGuide;
+  topbarActions.hidden = showGuide;
+  trackerViewButton.classList.toggle('active', !showGuide);
+  guideViewButton.classList.toggle('active', showGuide);
+  trackerViewButton.toggleAttribute('aria-current', !showGuide);
+  guideViewButton.toggleAttribute('aria-current', showGuide);
+  pageTitle.textContent = showGuide ? 'Combat Guide' : 'Stat Tracker';
+
+  if (updateHash) {
+    const hash = showGuide ? '#guide' : '#tracker';
+    if (location.hash !== hash) history.replaceState(null, '', hash);
+  }
+
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function syncViewFromHash() {
+  setAppView(location.hash === '#guide' ? 'guide' : 'tracker', false);
+}
+
+function renderAttackComposer() {
+  let potential = 2;
+  const labels = [];
+  const effects = [];
+
+  for (const button of prefixButtons) {
+    const key = button.dataset.prefix;
+    const selected = selectedPrefixes.has(key);
+    button.setAttribute('aria-pressed', String(selected));
+    if (!selected) continue;
+
+    const prefix = PREFIXES[key];
+    labels.push(prefix.label);
+    potential += prefix.potential;
+    effects.push(...prefix.effects);
+  }
+
+  const cost = 1 + labels.length;
+  attackName.textContent = labels.length ? `${labels.join(' ')} Attack` : 'Basic Attack';
+  attackCost.textContent = `${cost} AP`;
+  attackPotential.textContent = `${potential} wound${potential === 1 ? '' : 's'} max`;
+
+  renderPips(apPips, cost);
+  renderPips(potentialPips, potential);
+
+  if (selectedPrefixes.has('dashing')) {
+    effects.push(`Dashing movement: up to ${potential * 5} m (${potential} potential × 5 m).`);
+  }
+
+  attackEffects.replaceChildren(...effects.map(effect => {
+    const item = document.createElement('li');
+    item.textContent = effect;
+    return item;
+  }));
+
+  attackWarning.hidden = cost <= 3;
+  attackWarning.textContent = cost > 3
+    ? `${cost} AP exceeds the normal 3 AP available in a turn.`
+    : '';
+}
+
+function renderPips(container, count) {
+  container.replaceChildren(...Array.from({ length: count }, () => document.createElement('i')));
+}
+
+syncViewFromHash();
+renderAttackComposer();

@@ -1,13 +1,20 @@
-# SigilRPG Stat Tracker
+# SigilRPG Tracker
 
-Static browser-only tracker for the SigilRPG stats-as-dice variant.
+A small static companion for physical SigilRPG play.
+
+- Multiple character stat/wound tracking
+- Deferred damage applied at end of round
+- Local browser persistence with `localStorage`
+- Mobile horizontal swipe between characters
+- Single-page Combat Guide with an interactive attack-prefix reference
+- No dice roller, backend, framework, package manager, or build step
 
 ## GitHub Pages
 
-Put `index.html`, `styles.css`, and `app.js` in a repository, then enable GitHub Pages for the branch/folder containing them. No build step or backend is required.
+Serve the repository root with GitHub Pages. The site consists only of:
 
-Character state is stored in browser `localStorage` under `sigilrpg-stat-tracker-v1`.
+- `index.html`
+- `styles.css`
+- `app.js`
 
-## Damage timing
-
-Damage is queued per attribute during a round. Current attribute dice are unchanged until `End round` is pressed. This prevents damage suffered earlier in a round from reducing rolls later in that same round.
+The `#tracker` and `#guide` hashes select the two in-page views; both remain part of the same static page.

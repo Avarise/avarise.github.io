@@ -11,43 +11,187 @@
   <header class="topbar">
     <div>
       <p class="eyebrow">SigilRPG</p>
-      <h1>Stat Tracker</h1>
+      <h1 id="pageTitle">Stat Tracker</h1>
     </div>
-    <div class="topbar-actions">
+
+    <nav class="view-switch" aria-label="SigilRPG tools">
+      <button id="trackerViewButton" class="view-button active" type="button" aria-current="page">Tracker</button>
+      <button id="guideViewButton" class="view-button" type="button">Combat guide</button>
+    </nav>
+
+    <div id="topbarActions" class="topbar-actions">
       <button id="endAllButton" class="button button-primary" type="button">End round</button>
       <button id="resetAllButton" class="button button-danger-ghost" type="button">Full HP all</button>
     </div>
   </header>
 
   <main>
-    <section class="new-character" aria-labelledby="newCharacterTitle">
-      <div class="section-heading">
-        <div>
-          <h2 id="newCharacterTitle">Add character</h2>
-          <p>Set permanent attribute dice. Damage is queued during the round and applied only when the round ends.</p>
+    <section id="trackerView" class="app-view" aria-label="Stat tracker">
+      <section class="new-character" aria-labelledby="newCharacterTitle">
+        <div class="section-heading">
+          <div>
+            <h2 id="newCharacterTitle">Add character</h2>
+            <p>Set permanent attribute dice. Damage is queued during the round and applied only when the round ends.</p>
+          </div>
+          <button id="toggleCreatorButton" class="button" type="button" aria-expanded="false">Add character</button>
         </div>
-        <button id="toggleCreatorButton" class="button" type="button" aria-expanded="false">Add character</button>
-      </div>
 
-      <form id="characterForm" class="character-form" hidden>
-        <label class="name-field">
-          <span>Name</span>
-          <input id="characterName" name="name" type="text" maxlength="40" autocomplete="off" placeholder="Character name" required>
-        </label>
-        <div id="creationStats" class="creation-stats"></div>
-        <div class="form-actions">
-          <button class="button button-primary" type="submit">Create</button>
-          <button id="cancelCreateButton" class="button" type="button">Cancel</button>
-        </div>
-      </form>
+        <form id="characterForm" class="character-form" hidden>
+          <label class="name-field">
+            <span>Name</span>
+            <input id="characterName" name="name" type="text" maxlength="40" autocomplete="off" placeholder="Character name" required>
+          </label>
+          <div id="creationStats" class="creation-stats"></div>
+          <div class="form-actions">
+            <button class="button button-primary" type="submit">Create</button>
+            <button id="cancelCreateButton" class="button" type="button">Cancel</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="emptyState" class="empty-state">
+        <h2>No characters yet</h2>
+        <p>Add a character to start tracking wounds.</p>
+      </section>
+
+      <section id="characterGrid" class="character-grid" aria-live="polite"></section>
     </section>
 
-    <section id="emptyState" class="empty-state">
-      <h2>No characters yet</h2>
-      <p>Add a character to start tracking wounds.</p>
-    </section>
+    <section id="guideView" class="app-view guide-view" aria-labelledby="guideTitle" hidden>
+      <section class="guide-intro guide-panel">
+        <p class="eyebrow">Physical-play reference</p>
+        <h2 id="guideTitle">Building an attack</h2>
+        <p>An attack starts at <strong>1 AP</strong> and <strong>2 damage potential</strong>. Prefixes modify that same attack and normally cost another AP each.</p>
+      </section>
 
-    <section id="characterGrid" class="character-grid" aria-live="polite"></section>
+      <section class="guide-panel attack-composer" aria-labelledby="composerTitle">
+        <div class="guide-heading">
+          <div>
+            <p class="eyebrow">Try combinations</p>
+            <h2 id="composerTitle">Attack composer</h2>
+          </div>
+          <button id="clearPrefixesButton" class="button compact-button" type="button">Clear</button>
+        </div>
+
+        <div class="prefix-buttons" role="group" aria-label="Attack prefixes">
+          <button class="prefix-button" type="button" data-prefix="power" aria-pressed="false">
+            <strong>Power</strong>
+            <span>+1 potential · accuracy +1 tier</span>
+          </button>
+          <button class="prefix-button" type="button" data-prefix="precision" aria-pressed="false">
+            <strong>Precision</strong>
+            <span>+1 potential · accuracy advantage</span>
+          </button>
+          <button class="prefix-button" type="button" data-prefix="dashing" aria-pressed="false">
+            <strong>Dashing</strong>
+            <span>+1 potential · move with attack</span>
+          </button>
+          <button class="prefix-button" type="button" data-prefix="sweep" aria-pressed="false">
+            <strong>Sweep</strong>
+            <span>Multiple targets · no extra potential</span>
+          </button>
+        </div>
+
+        <article class="attack-result" aria-live="polite">
+          <div>
+            <span class="label">Attack</span>
+            <strong id="attackName">Basic Attack</strong>
+          </div>
+          <div class="attack-metrics">
+            <div>
+              <span class="label">Cost</span>
+              <strong id="attackCost">1 AP</strong>
+              <div id="apPips" class="pips" aria-hidden="true"></div>
+            </div>
+            <div>
+              <span class="label">Potential</span>
+              <strong id="attackPotential">2 wounds max</strong>
+              <div id="potentialPips" class="pips potential-pips" aria-hidden="true"></div>
+            </div>
+          </div>
+          <p id="attackWarning" class="attack-warning" hidden></p>
+          <ul id="attackEffects" class="attack-effects"></ul>
+        </article>
+      </section>
+
+      <section class="guide-panel" aria-labelledby="chainTitle">
+        <p class="eyebrow">Damage potential</p>
+        <h2 id="chainTitle">The damage chain</h2>
+        <p class="guide-copy">Potential is a ceiling, not automatic damage. The attack progresses through defenses until the defender wins or ties, or the attack reaches its potential.</p>
+
+        <div class="chain-diagram" aria-label="Example damage chain">
+          <div class="chain-step start-step">
+            <span>Accuracy</span>
+            <strong>Attack connects</strong>
+          </div>
+          <div class="chain-arrow">↓</div>
+          <div class="wound-marker">Wound 1</div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-step">
+            <span>DEX</span>
+            <strong>Dodge overcome</strong>
+          </div>
+          <div class="chain-arrow">↓</div>
+          <div class="wound-marker">Wound 2</div>
+          <div class="chain-arrow">↓</div>
+          <div class="chain-step stopped-step">
+            <span>CON</span>
+            <strong>Defender wins / ties</strong>
+          </div>
+          <div class="chain-stop">STOP · result: 2 wounds</div>
+        </div>
+
+        <div class="potential-example">
+          <span>Potential 4</span>
+          <div class="potential-line" aria-label="Potential four attack stopped after two wounds">
+            <i class="filled"></i><i class="filled"></i><i></i><i></i>
+          </div>
+          <strong>2 wounds actually dealt</strong>
+        </div>
+      </section>
+
+      <section class="guide-panel" aria-labelledby="examplesTitle">
+        <p class="eyebrow">Common patterns</p>
+        <h2 id="examplesTitle">Examples</h2>
+
+        <div class="example-grid">
+          <article class="example-card">
+            <div class="example-title"><strong>Three basic attacks</strong><span>3 AP</span></div>
+            <div class="mini-attacks"><span>Attack</span><span>Attack</span><span>Attack</span></div>
+            <p>Three independent attacks, each with potential 2. This is not one potential-6 attack.</p>
+          </article>
+
+          <article class="example-card">
+            <div class="example-title"><strong>Power + Precision</strong><span>3 AP · potential 4</span></div>
+            <p>Accuracy improves, Precision gives advantage, and the attack may wound one attribute twice.</p>
+          </article>
+
+          <article class="example-card">
+            <div class="example-title"><strong>Dashing Attack</strong><span>2 AP · potential 3</span></div>
+            <p>Move as part of the attack. At potential 3, the movement allowance is up to 15 m.</p>
+          </article>
+
+          <article class="example-card">
+            <div class="example-title"><strong>Sweep Attack</strong><span>2 AP · potential 2</span></div>
+            <div class="sweep-diagram" aria-hidden="true"><span>A</span><b>Attacker</b><span>B</span><span>C</span></div>
+            <p>Apply the sweeping attack to multiple targets. Sweep does not increase potential.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="guide-panel rules-panel" aria-labelledby="rulesTitle">
+        <p class="eyebrow">Keep in mind</p>
+        <h2 id="rulesTitle">Important rules</h2>
+        <ul>
+          <li>Ties favor the defender.</li>
+          <li>Losing a melee accuracy contest causes 1 chip damage.</li>
+          <li>Normally one attack cannot wound the same attribute twice.</li>
+          <li>Precision allows one attribute to be wounded twice by that attack.</li>
+          <li>The wounded attribute follows the injury fiction; it is not automatically the defense that failed.</li>
+          <li>Prefixes cost 1 AP each. Quick is intentionally omitted until its rule is defined.</li>
+        </ul>
+      </section>
+    </section>
   </main>
 
   <template id="characterTemplate">
