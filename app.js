@@ -5,6 +5,7 @@ const ATTRIBUTES = ['STR', 'DEX', 'CON', 'INT', 'SEN', 'AUR'];
 const DICE = [4, 6, 8, 10, 12, 20, 100];
 
 let state = loadState();
+const editingStatIds = new Set();
 
 const grid = document.querySelector('#characterGrid');
 const emptyState = document.querySelector('#emptyState');
@@ -127,6 +128,7 @@ function renderCharacter(character) {
   const hpValue = fragment.querySelector('.hp-value');
   const pendingSummary = fragment.querySelector('.pending-summary');
   const stats = fragment.querySelector('.stats');
+  const editStatsButton = fragment.querySelector('.edit-stats-button');
   const fullHpButton = fragment.querySelector('.full-hp-button');
   const deleteButton = fragment.querySelector('.delete-button');
   const endRoundButton = fragment.querySelector('.end-round-button');
@@ -152,8 +154,12 @@ function renderCharacter(character) {
     pendingSummary.textContent = 'No pending damage';
   }
 
+  const editingStats = editingStatIds.has(character.id);
+  editStatsButton.textContent = editingStats ? 'Done' : 'Edit stats';
+  editStatsButton.setAttribute('aria-pressed', String(editingStats));
+
   for (const attribute of ATTRIBUTES) {
-    stats.append(renderStat(character, attribute));
+    stats.append(renderStat(character, attribute, editingStats));
   }
 
   endRoundButton.disabled = pendingCount === 0 || character.dead;
@@ -163,6 +169,12 @@ function renderCharacter(character) {
     character.name = name.value.trim() || 'Unnamed';
     saveState();
     name.value = character.name;
+  });
+
+  editStatsButton.addEventListener('click', () => {
+    if (editingStats) editingStatIds.delete(character.id);
+    else editingStatIds.add(character.id);
+    render();
   });
 
   fullHpButton.addEventListener('click', () => {
@@ -190,7 +202,7 @@ function renderCharacter(character) {
   return fragment;
 }
 
-function renderStat(character, attribute) {
+function renderStat(character, attribute, editingStats) {
   const row = document.createElement('div');
   row.className = 'stat-row';
 
@@ -206,11 +218,30 @@ function renderStat(character, attribute) {
   current.textContent = `d${character.current[attribute]}`;
   current.classList.toggle('reduced', character.current[attribute] !== character.maximum[attribute]);
 
-  const max = document.createElement('span');
-  max.className = 'max-die';
-  max.textContent = `max d${character.maximum[attribute]}`;
+  if (editingStats) {
+    const max = document.createElement('select');
+    max.className = 'max-die-select';
+    max.setAttribute('aria-label', `${attribute} base die`);
 
-  dice.append(current, max);
+    for (const die of DICE) {
+      const option = document.createElement('option');
+      option.value = String(die);
+      option.textContent = `base d${die}`;
+      option.selected = die === character.maximum[attribute];
+      max.append(option);
+    }
+
+    max.addEventListener('change', () => {
+      setMaximumDie(character, attribute, Number(max.value));
+      saveAndRender();
+    });
+    dice.append(current, max);
+  } else {
+    const max = document.createElement('span');
+    max.className = 'max-die';
+    max.textContent = `max d${character.maximum[attribute]}`;
+    dice.append(current, max);
+  }
 
   if (character.pending[attribute] > 0) {
     const pending = document.createElement('span');
@@ -245,9 +276,40 @@ function renderStat(character, attribute) {
     saveAndRender();
   });
 
-  controls.append(undo, damage);
+  const heal = document.createElement('button');
+  heal.type = 'button';
+  heal.className = 'heal-button';
+  heal.textContent = '+ heal';
+  heal.title = `Restore one ${attribute} tier`;
+  heal.disabled = character.dead || character.current[attribute] === character.maximum[attribute];
+  heal.addEventListener('click', () => {
+    healAttribute(character, attribute);
+    saveAndRender();
+  });
+
+  controls.append(undo, damage, heal);
   row.append(statName, dice, controls);
   return row;
+}
+
+function setMaximumDie(character, attribute, newMaximum) {
+  const oldMaximumIndex = DICE.indexOf(character.maximum[attribute]);
+  const currentIndex = DICE.indexOf(character.current[attribute]);
+  const newMaximumIndex = DICE.indexOf(newMaximum);
+  const lostTiers = Math.max(0, oldMaximumIndex - currentIndex);
+
+  character.maximum[attribute] = newMaximum;
+  character.current[attribute] = DICE[Math.max(0, newMaximumIndex - lostTiers)];
+  character.pending[attribute] = Math.min(
+    character.pending[attribute] || 0,
+    DICE.indexOf(character.current[attribute])
+  );
+}
+
+function healAttribute(character, attribute) {
+  const currentIndex = DICE.indexOf(character.current[attribute]);
+  const maximumIndex = DICE.indexOf(character.maximum[attribute]);
+  if (currentIndex < maximumIndex) character.current[attribute] = DICE[currentIndex + 1];
 }
 
 function buildDamageSummary(character) {

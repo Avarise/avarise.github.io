@@ -3,6 +3,7 @@
 A small static companion for physical SigilRPG play.
 
 - Multiple character stat/wound tracking
+- Editable base attribute dice and one-tier attribute healing
 - Deferred damage applied at end of round with changed-values confirmation
 - Local browser persistence with `localStorage`
 - Mobile horizontal swipe between characters

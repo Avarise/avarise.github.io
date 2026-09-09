@@ -55,7 +55,8 @@ h2 { font-size: 1.05rem; }
 .button,
 .icon-button,
 .damage-button,
-.pending-button {
+.pending-button,
+.heal-button {
   border: 1px solid var(--line);
   background: var(--panel-2);
   color: var(--text);
@@ -63,7 +64,7 @@ h2 { font-size: 1.05rem; }
 }
 
 .button { padding: 9px 13px; }
-.button:hover, .icon-button:hover, .damage-button:hover, .pending-button:hover { border-color: #59616a; }
+.button:hover, .icon-button:hover, .damage-button:hover, .pending-button:hover, .heal-button:hover { border-color: #59616a; }
 .button-primary { border-color: #7d6a40; background: #332d21; }
 .button-danger-ghost { color: #e2a0a0; }
 .icon-button { width: 38px; height: 38px; font-size: 1.45rem; }
@@ -177,12 +178,14 @@ input, select {
 .stat-dice { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .current-die { font-weight: 800; font-size: 1.15rem; }
 .max-die { color: var(--muted); font-size: .75rem; }
+.max-die-select { min-height: 32px; padding: 4px 7px; font-size: .75rem; }
 .current-die.reduced { color: #e1c98f; }
 .pending-wounds { color: var(--danger); font-size: .8rem; font-weight: 700; }
 .stat-controls { display: flex; gap: 6px; }
-.damage-button, .pending-button { min-width: 42px; height: 34px; padding: 0 9px; }
+.damage-button, .pending-button, .heal-button { min-width: 42px; height: 34px; padding: 0 9px; }
 .damage-button { color: #f0c3c3; }
-.pending-button:disabled, .button:disabled { opacity: .4; cursor: default; }
+.heal-button { color: #b9ddbf; }
+.pending-button:disabled, .damage-button:disabled, .heal-button:disabled, .button:disabled { opacity: .4; cursor: default; }
 
 .card-footer { justify-content: flex-end; padding-top: 2px; }
 
