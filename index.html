@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111315">
+  <title>SigilRPG Stat Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">SigilRPG</p>
+      <h1>Stat Tracker</h1>
+    </div>
+    <div class="topbar-actions">
+      <button id="endAllButton" class="button button-primary" type="button">End round</button>
+      <button id="resetAllButton" class="button button-danger-ghost" type="button">Full HP all</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="new-character" aria-labelledby="newCharacterTitle">
+      <div class="section-heading">
+        <div>
+          <h2 id="newCharacterTitle">Add character</h2>
+          <p>Set permanent attribute dice. Damage is queued during the round and applied only when the round ends.</p>
+        </div>
+        <button id="toggleCreatorButton" class="button" type="button" aria-expanded="false">Add character</button>
+      </div>
+
+      <form id="characterForm" class="character-form" hidden>
+        <label class="name-field">
+          <span>Name</span>
+          <input id="characterName" name="name" type="text" maxlength="40" autocomplete="off" placeholder="Character name" required>
+        </label>
+        <div id="creationStats" class="creation-stats"></div>
+        <div class="form-actions">
+          <button class="button button-primary" type="submit">Create</button>
+          <button id="cancelCreateButton" class="button" type="button">Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="emptyState" class="empty-state">
+      <h2>No characters yet</h2>
+      <p>Add a character to start tracking wounds.</p>
+    </section>
+
+    <section id="characterGrid" class="character-grid" aria-live="polite"></section>
+  </main>
+
+  <template id="characterTemplate">
+    <article class="character-card">
+      <header class="card-header">
+        <div>
+          <input class="character-name" aria-label="Character name" maxlength="40">
+          <div class="character-meta"></div>
+        </div>
+        <div class="card-actions">
+          <button class="button full-hp-button" type="button">Full HP</button>
+          <button class="icon-button delete-button" type="button" title="Delete character" aria-label="Delete character">×</button>
+        </div>
+      </header>
+
+      <div class="hp-row">
+        <div>
+          <span class="label">HP</span>
+          <strong class="hp-value"></strong>
+        </div>
+        <div class="pending-summary"></div>
+      </div>
+
+      <div class="stats"></div>
+
+      <footer class="card-footer">
+        <button class="button button-primary end-round-button" type="button">End round</button>
+        <button class="button undo-pending-button" type="button">Clear pending</button>
+      </footer>
+    </article>
+  </template>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
