@@ -99,6 +99,7 @@ function setCreatorOpen(open) {
 }
 
 function render() {
+  const previousHorizontalScroll = grid.scrollLeft;
   grid.replaceChildren();
   emptyState.hidden = state.characters.length > 0;
   endAllButton.disabled = !state.characters.some(hasPendingDamage);
@@ -107,6 +108,10 @@ function render() {
   for (const character of state.characters) {
     grid.append(renderCharacter(character));
   }
+
+  // Re-rendering after a wound/control action should not jump a mobile DM
+  // back to the first character in the horizontal tracker.
+  grid.scrollLeft = previousHorizontalScroll;
 }
 
 function renderCharacter(character) {
@@ -227,8 +232,9 @@ function renderStat(character, attribute) {
   damage.className = 'damage-button';
   damage.textContent = '+ dmg';
   damage.title = `Queue one ${attribute} wound`;
-  damage.disabled = character.dead;
+  damage.disabled = character.dead || !canQueueDamage(character, attribute);
   damage.addEventListener('click', () => {
+    if (!canQueueDamage(character, attribute)) return;
     character.pending[attribute] += 1;
     saveAndRender();
   });
@@ -280,6 +286,12 @@ function restoreFullHp(character) {
 
 function calculateHp(diceMap) {
   return ATTRIBUTES.reduce((total, attribute) => total + DICE.indexOf(diceMap[attribute]), 0);
+}
+
+function canQueueDamage(character, attribute) {
+  const currentIndex = DICE.indexOf(character.current[attribute]);
+  const pending = character.pending[attribute] || 0;
+  return currentIndex - pending > 0;
 }
 
 function totalPending(character) {

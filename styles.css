@@ -192,6 +192,25 @@ input, select {
   .topbar-actions .button { flex: 1; }
   .section-heading { align-items: flex-start; flex-direction: column; }
   .creation-stats { grid-template-columns: repeat(3, 1fr); }
+
+  .character-grid {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .character-grid::-webkit-scrollbar { display: none; }
+  .character-card {
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
   .stat-row { grid-template-columns: 48px 1fr; }
   .stat-controls { grid-column: 2; justify-content: flex-end; }
 }
