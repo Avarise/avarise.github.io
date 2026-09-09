@@ -430,6 +430,27 @@ input, select {
 .sweep-diagram b { grid-row: 1 / 3; grid-column: 2; border: 1px solid #776641; border-radius: 8px; padding: 10px 4px; }
 .sweep-diagram span { border: 1px solid var(--line); border-radius: 7px; padding: 6px; }
 
+.rule-callout {
+  margin-top: 18px;
+  border-left: 3px solid var(--accent);
+  border-radius: 5px;
+  background: #1b1914;
+  padding: 12px 14px;
+}
+.rule-callout > strong { color: var(--accent); }
+.rule-callout p { color: var(--muted); line-height: 1.5; margin-top: 5px; }
+
+.weapon-grid,
+.equipment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 15px; }
+.weapon-card,
+.equipment-card { border: 1px solid #292f35; border-radius: 11px; background: #131619; padding: 13px; }
+.weapon-card > strong,
+.equipment-card > strong { display: block; }
+.weapon-card > span,
+.equipment-card > span { display: block; color: var(--accent); font-size: .75rem; margin-top: 4px; }
+.weapon-card p,
+.equipment-card p { color: var(--muted); font-size: .84rem; line-height: 1.5; margin-top: 9px; }
+
 .rules-panel ul { margin: 13px 0 0; padding-left: 20px; color: var(--muted); line-height: 1.55; }
 .rules-panel li + li { margin-top: 7px; }
 
@@ -463,7 +484,9 @@ input, select {
   .guide-panel { padding: 15px; }
   .prefix-buttons { grid-template-columns: 1fr; }
   .prefix-button { min-height: 66px; }
-  .example-grid { grid-template-columns: 1fr; }
+  .example-grid,
+  .weapon-grid,
+  .equipment-grid { grid-template-columns: 1fr; }
   .potential-example { grid-template-columns: 1fr; text-align: center; }
   .attack-metrics { grid-template-columns: 1fr 1fr; }
 }

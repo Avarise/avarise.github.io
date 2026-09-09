@@ -55,6 +55,11 @@ form.addEventListener('submit', event => {
 });
 
 endAllButton.addEventListener('click', () => {
+  const summaries = state.characters
+    .filter(hasPendingDamage)
+    .map(character => `${character.name}\n${buildDamageSummary(character)}`);
+  if (!summaries.length) return;
+  if (!confirm(`Apply pending wounds?\n\n${summaries.join('\n\n')}`)) return;
   state.characters.forEach(applyPendingDamage);
   saveAndRender();
 });
@@ -172,6 +177,7 @@ function renderCharacter(character) {
   });
 
   endRoundButton.addEventListener('click', () => {
+    if (!confirm(`Apply pending wounds to ${character.name}?\n\n${buildDamageSummary(character)}`)) return;
     applyPendingDamage(character);
     saveAndRender();
   });
@@ -242,6 +248,22 @@ function renderStat(character, attribute) {
   controls.append(undo, damage);
   row.append(statName, dice, controls);
   return row;
+}
+
+function buildDamageSummary(character) {
+  const preview = structuredClone(character);
+  const oldHp = calculateHp(character.current);
+  applyPendingDamage(preview);
+
+  const changes = ATTRIBUTES
+    .filter(attribute => character.current[attribute] !== preview.current[attribute])
+    .map(attribute => `${attribute}: d${character.current[attribute]} → d${preview.current[attribute]}`);
+
+  const newHp = calculateHp(preview.current);
+  if (oldHp !== newHp) changes.push(`HP: ${oldHp} → ${newHp}`);
+  if (!character.dead && preview.dead) changes.push('Status: DEAD');
+
+  return changes.join('\n') || 'No values change.';
 }
 
 function applyPendingDamage(character) {
@@ -343,17 +365,17 @@ const PREFIXES = {
   power: {
     label: 'Power',
     potential: 1,
-    effects: ['Accuracy die increases by one tier.', 'Damage potential increases by 1.']
+    effects: ['Accuracy die increases by one tier.']
   },
   precision: {
     label: 'Precision',
     potential: 1,
-    effects: ['Gain advantage on the accuracy roll.', 'Damage potential increases by 1.', 'One attribute may be wounded twice by this attack.']
+    effects: ['Gain advantage on the accuracy roll.', 'One attribute may be wounded twice by this attack.']
   },
   dashing: {
     label: 'Dashing',
     potential: 1,
-    effects: ['Damage potential increases by 1.']
+    effects: []
   },
   sweep: {
     label: 'Sweep',
@@ -420,6 +442,11 @@ function renderAttackComposer() {
     labels.push(prefix.label);
     potential += prefix.potential;
     effects.push(...prefix.effects);
+  }
+
+  const potentialIncrease = potential - 2;
+  if (potentialIncrease > 0) {
+    effects.push(`Damage potential increases by ${potentialIncrease}.`);
   }
 
   const cost = 1 + labels.length;

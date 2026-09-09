@@ -61,7 +61,7 @@
       <section class="guide-intro guide-panel">
         <p class="eyebrow">Physical-play reference</p>
         <h2 id="guideTitle">Building an attack</h2>
-        <p>An attack starts at <strong>1 AP</strong> and <strong>2 damage potential</strong>. Prefixes modify that same attack and normally cost another AP each.</p>
+        <p>An attack starts at <strong>1 AP</strong> and <strong>2 damage potential</strong>. Each point of potential is one contest and can cause one wound. Prefixes modify that same attack and normally cost another AP each.</p>
       </section>
 
       <section class="guide-panel attack-composer" aria-labelledby="composerTitle">
@@ -117,29 +117,35 @@
       <section class="guide-panel" aria-labelledby="chainTitle">
         <p class="eyebrow">Damage potential</p>
         <h2 id="chainTitle">The damage chain</h2>
-        <p class="guide-copy">Potential is a ceiling, not automatic damage. The attack progresses through defenses until the defender wins or ties, or the attack reaches its potential.</p>
+        <p class="guide-copy">Potential is a ceiling, not automatic damage: <strong>one potential means one contest and at most one wound</strong>. The chain stops as soon as the defender wins or ties.</p>
 
-        <div class="chain-diagram" aria-label="Example damage chain">
+        <div class="chain-diagram" aria-label="Example three-potential damage chain stopped at the third contest">
           <div class="chain-step start-step">
-            <span>Accuracy</span>
-            <strong>Attack connects</strong>
-          </div>
-          <div class="chain-arrow">↓</div>
-          <div class="wound-marker">Wound 1</div>
-          <div class="chain-arrow">↓</div>
-          <div class="chain-step">
-            <span>DEX</span>
+            <span>Contest 1 · Accuracy vs DEX</span>
             <strong>Dodge overcome</strong>
           </div>
+          <div class="chain-arrow">↓ success</div>
+          <div class="wound-marker">Queue wound 1</div>
           <div class="chain-arrow">↓</div>
-          <div class="wound-marker">Wound 2</div>
+          <div class="chain-step">
+            <span>Contest 2 · Accuracy or Impact vs CON</span>
+            <strong>Brace overcome</strong>
+          </div>
+          <div class="chain-arrow">↓ success</div>
+          <div class="wound-marker">Queue wound 2</div>
           <div class="chain-arrow">↓</div>
           <div class="chain-step stopped-step">
-            <span>CON</span>
+            <span>Contest 3 · relevant defense</span>
             <strong>Defender wins / ties</strong>
           </div>
-          <div class="chain-stop">STOP · result: 2 wounds</div>
+          <div class="chain-stop">STOP · result: 2 pending wounds</div>
         </div>
+
+        <aside class="rule-callout">
+          <strong>Impact</strong>
+          <p>After an attack connects, use the weapon's Impact instead of the retained Accuracy result only when Impact is higher. A high Accuracy roll remains dangerous throughout the chain; there are no critical hits.</p>
+          <p><strong>Example:</strong> Accuracy 12 with an Impact 8 weapon keeps 12. Accuracy 5 with that weapon uses Impact 8 after the Dodge contest.</p>
+        </aside>
 
         <div class="potential-example">
           <span>Potential 4</span>
@@ -179,15 +185,51 @@
         </div>
       </section>
 
+      <section class="guide-panel" aria-labelledby="equipmentTitle">
+        <p class="eyebrow">Playtest reference</p>
+        <h2 id="equipmentTitle">Weapons</h2>
+        <p class="guide-copy">Impact is adapted from the maximum of each weapon's working damage dice. Accuracy connects the attack; the higher of retained Accuracy or Impact is used after the Dodge contest.</p>
+
+        <div class="weapon-grid">
+          <article class="weapon-card"><strong>Spear</strong><span>STR / DEX · Impact 8</span><p>Brace against enemies entering melee.</p></article>
+          <article class="weapon-card"><strong>Staff</strong><span>STR / DEX · Impact 6 / 8</span><p>Versatile; Bash can expose knockdown.</p></article>
+          <article class="weapon-card"><strong>Wire</strong><span>STR / DEX · Impact 4</span><p>10 m reach; can pull or move objects.</p></article>
+          <article class="weapon-card"><strong>Dagger</strong><span>STR / DEX · Impact 4</span><p>Intended to bypass plating protection.</p></article>
+          <article class="weapon-card"><strong>Short Blade</strong><span>STR / DEX · Impact 6</span><p>Defensive benefit when held offhand.</p></article>
+          <article class="weapon-card"><strong>Shield</strong><span>STR / DEX · Impact 4</span><p>Defense; thrown 30 m; Bash.</p></article>
+          <article class="weapon-card"><strong>Long Blade</strong><span>STR · Impact 8 / 10</span><p>Impact 10 when used two-handed.</p></article>
+          <article class="weapon-card"><strong>Ripper</strong><span>STR · Impact 12</span><p>Heavy weapon.</p></article>
+          <article class="weapon-card"><strong>Bow</strong><span>DEX · Impact 8</span><p>60 m effective / 120 m maximum.</p></article>
+          <article class="weapon-card"><strong>Hand Gun</strong><span>DEX · Impact 6</span><p>60 m / 120 m; 10-round magazine.</p></article>
+          <article class="weapon-card"><strong>Rifle</strong><span>DEX · Impact 10</span><p>120 m / 240 m; 6-round magazine.</p></article>
+          <article class="weapon-card"><strong>Emitter</strong><span>DEX · Impact 12</span><p>30 m hard limit; cartridge-powered.</p></article>
+          <article class="weapon-card"><strong>Multitool Laser</strong><span>DEX · Impact 4</span><p>30 m / 150 m; requires cooldown.</p></article>
+        </div>
+      </section>
+
+      <section class="guide-panel" aria-labelledby="platingTitle">
+        <p class="eyebrow">Playtest reference</p>
+        <h2 id="platingTitle">Plating</h2>
+        <p class="guide-copy">Plating trades mobility for reliable defense. Exact stats-as-dice equipment wording is still being tested; confirm unresolved values with the GM.</p>
+        <div class="equipment-grid">
+          <article class="equipment-card"><strong>Unarmored</strong><span>Full mobility</span><p>No defensive guarantee and no Dodge limit.</p></article>
+          <article class="equipment-card"><strong>Light plating</strong><span>Mobile protection</span><p>No confirmed stats-as-dice guarantee or Dodge limit yet.</p></article>
+          <article class="equipment-card"><strong>Medium / heavy plating</strong><span>Unresolved playtest example</span><p>The notes suggest a CON guarantee around 8 and Dodge around 6, but do not yet settle whether these are minimums, fixed results, or limits.</p></article>
+        </div>
+      </section>
+
       <section class="guide-panel rules-panel" aria-labelledby="rulesTitle">
         <p class="eyebrow">Keep in mind</p>
         <h2 id="rulesTitle">Important rules</h2>
         <ul>
-          <li>Ties favor the defender.</li>
+          <li>Each point of damage potential is one contest and can cause one wound.</li>
+          <li>Ties favor the defender and stop the damage chain.</li>
           <li>Losing a melee accuracy contest causes 1 chip damage.</li>
           <li>Normally one attack cannot wound the same attribute twice.</li>
           <li>Precision allows one attribute to be wounded twice by that attack.</li>
+          <li>After Dodge, use Impact instead of Accuracy only when Impact is higher.</li>
           <li>The wounded attribute follows the injury fiction; it is not automatically the defense that failed.</li>
+          <li>Queue wounds during the round; apply all attribute reductions when the round ends.</li>
           <li>Prefixes cost 1 AP each. Quick is intentionally omitted until its rule is defined.</li>
         </ul>
       </section>

@@ -3,10 +3,10 @@
 A small static companion for physical SigilRPG play.
 
 - Multiple character stat/wound tracking
-- Deferred damage applied at end of round
+- Deferred damage applied at end of round with changed-values confirmation
 - Local browser persistence with `localStorage`
 - Mobile horizontal swipe between characters
-- Single-page Combat Guide with an interactive attack-prefix reference
+- Single-page Combat Guide with attack prefixes, damage chains, Impact, weapons, and plating references
 - No dice roller, backend, framework, package manager, or build step
 
 ## GitHub Pages
